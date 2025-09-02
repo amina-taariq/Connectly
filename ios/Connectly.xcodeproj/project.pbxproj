@@ -11,6 +11,11 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		3A3AB98486A64E71BAB466CE /* DMSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0262EFF9FD8B426B98F2AA72 /* DMSans-Bold.ttf */; };
+		CC14B251E9D3488EB0D55E26 /* DMSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CDC2BED0D1494957A084F13C /* DMSans-Light.ttf */; };
+		F4DDE30369FC4D29A882BA94 /* DMSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E06578E336E14ACEB969DB22 /* DMSans-Medium.ttf */; };
+		9AE30EC8958147E1AE9E8B28 /* DMSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3D8D565F759A45C392092293 /* DMSans-Regular.ttf */; };
+		241072E3EE704278AE2B0FE6 /* DMSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5782FF0715704BCD8C773FBC /* DMSans-SemiBold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +29,11 @@
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Connectly/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Connectly/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		0262EFF9FD8B426B98F2AA72 /* DMSans-Bold.ttf */ = {isa = PBXFileReference; name = "DMSans-Bold.ttf"; path = "../src/assets/fonts/DMSans-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		CDC2BED0D1494957A084F13C /* DMSans-Light.ttf */ = {isa = PBXFileReference; name = "DMSans-Light.ttf"; path = "../src/assets/fonts/DMSans-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		E06578E336E14ACEB969DB22 /* DMSans-Medium.ttf */ = {isa = PBXFileReference; name = "DMSans-Medium.ttf"; path = "../src/assets/fonts/DMSans-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		3D8D565F759A45C392092293 /* DMSans-Regular.ttf */ = {isa = PBXFileReference; name = "DMSans-Regular.ttf"; path = "../src/assets/fonts/DMSans-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		5782FF0715704BCD8C773FBC /* DMSans-SemiBold.ttf */ = {isa = PBXFileReference; name = "DMSans-SemiBold.ttf"; path = "../src/assets/fonts/DMSans-SemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +84,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				CF399C59396644CD9F391060 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -96,6 +107,19 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		CF399C59396644CD9F391060 /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				0262EFF9FD8B426B98F2AA72 /* DMSans-Bold.ttf */,
+				CDC2BED0D1494957A084F13C /* DMSans-Light.ttf */,
+				E06578E336E14ACEB969DB22 /* DMSans-Medium.ttf */,
+				3D8D565F759A45C392092293 /* DMSans-Regular.ttf */,
+				5782FF0715704BCD8C773FBC /* DMSans-SemiBold.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -159,6 +183,11 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				3A3AB98486A64E71BAB466CE /* DMSans-Bold.ttf in Resources */,
+				CC14B251E9D3488EB0D55E26 /* DMSans-Light.ttf in Resources */,
+				F4DDE30369FC4D29A882BA94 /* DMSans-Medium.ttf in Resources */,
+				9AE30EC8958147E1AE9E8B28 /* DMSans-Regular.ttf in Resources */,
+				241072E3EE704278AE2B0FE6 /* DMSans-SemiBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

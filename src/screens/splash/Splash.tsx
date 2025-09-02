@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { Colors } from '../../constant/Colors';
 type RootStackParamList = {
   Login: undefined;
 };
@@ -41,9 +42,9 @@ const SplashScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: Colors.main,
   },
   logo: {
     width: 400,

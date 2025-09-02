@@ -1,7 +1,7 @@
 const fonts = {
   SansBold: 'DMSans-Bold',
   SansLight: 'DMSans-Light',
-  SansMedium: 'InstrumentSans-Medium',
+  SansMedium: 'DMSans-Medium',
   SansRegular: 'DMSans-Regular',
   SansSemiBold: 'DMSans-SemiBold',
 };
