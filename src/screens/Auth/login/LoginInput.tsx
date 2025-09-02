@@ -2,11 +2,13 @@ import React, {useState} from 'react';
 import {View, TextInput, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import fonts from '../../../utils/fonts';
 import { Colors } from '../../../constant/Colors';
+import { useNavigation } from '@react-navigation/native';
 
 const LoginInput: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+     const navigation = useNavigation<any>();
 
   return (
     <View>
@@ -40,7 +42,9 @@ const LoginInput: React.FC = () => {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.loginButton} onPress={() => {}}>
+      <TouchableOpacity
+        style={styles.loginButton}
+        onPress={() => navigation.navigate('Home')}>
         <Text style={styles.loginText}>Login</Text>
       </TouchableOpacity>
     </View>

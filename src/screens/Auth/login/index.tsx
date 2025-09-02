@@ -4,7 +4,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Image,
   Text,
 
 } from 'react-native';
@@ -12,6 +11,7 @@ import { Colors } from '../../../constant/Colors';
 import fonts from '../../../utils/fonts';
 import LoginFooter from './LoginFooter';
 import LoginInput from './LoginInput';
+import Logo from '../../../components/Logo';
 interface LoginScreenProps {
   navigation: any;
 }
@@ -22,21 +22,25 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
     <View style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={{ flex: 1 }}>
+        style={{ flex: 1 }}
+      >
         <ScrollView
           keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}>
+          showsVerticalScrollIndicator={false}
+        >
           <View style={styles.header}>
-            <Image
-              source={require('../../../assets/images/logo.png')}
-              style={styles.logo}
-              resizeMode="contain"
+            <Logo
+              iconWidth={56}
+              iconHeight={56}
+              textSize={28}
+              showText
+              text="Connectly"
             />
           </View>
           <View style={styles.content}>
             <Text style={styles.titleHeader}>Login to your account</Text>
-            <LoginInput/>
-            <LoginFooter/>
+            <LoginInput />
+            <LoginFooter />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

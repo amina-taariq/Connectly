@@ -2,11 +2,11 @@ import React, {useEffect} from 'react';
 import {
   View,
   StyleSheet,
-  Image,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Colors } from '../../constant/Colors';
+import Logo from '../../components/Logo';
 type RootStackParamList = {
   Login: undefined;
 };
@@ -30,10 +30,12 @@ const SplashScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Image
-        source={require('../../assets/images/logo.png')}
-        style={styles.logo}
-        resizeMode="contain"
+      <Logo
+        iconWidth={56}
+        iconHeight={56}
+        textSize={28}
+        showText
+        text="Connectly"
       />
     </View>
   );

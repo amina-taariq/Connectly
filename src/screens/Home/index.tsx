@@ -1,77 +1,65 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  TouchableOpacity,
-} from 'react-native';
-interface HomeScreenProps {
-  navigation: any;
-}
+import { View, StyleSheet, FlatList } from 'react-native';
+import { Colors } from '../../constant/Colors';
+import ChatBox from './ChatBox';
+import ChatList from './ChatList';
+import Logo from '../../components/Logo';
 
-const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-  const handleLogout = () => {
-    // Navigate back to login screen
-    navigation.navigate('Login');
-  };
+const HomeScreen = () => {
+  const renderChatItem = ({ item }: { item: any }) => (
+    <ChatBox
+      name={item.name}
+      time={item.time}
+      message={item.message}
+      profilePic={item.profilePic}
+      isRead={item.isRead}
+    />
+  );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.title}>Welcome to Connectly!</Text>
-        <Text style={styles.subtitle}>You are successfully logged in.</Text>
-        
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Text style={styles.logoutButtonText}>Logout</Text>
-        </TouchableOpacity>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Logo iconWidth={44} iconHeight={44} textSize={22} showText text="Connectly"  />
       </View>
-    </SafeAreaView>
+      <View style={styles.content}>
+        <FlatList
+          data={ChatList}
+          renderItem={renderChatItem}
+          keyExtractor={item => item.id}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 100 }}
+        />
+      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.main,
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
+    backgroundColor: Colors.white,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    flexGrow: 1,
+    minHeight: '100%',
+    paddingBottom: 24,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#000000',
-    marginBottom: 16,
-    textAlign: 'center',
+  header: {
+    width: '100%',
+    paddingTop: 20,
+    paddingBottom: 12,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    alignItems:'flex-start'
   },
-  subtitle: {
-    fontSize: 16,
-    color: '#666666',
-    textAlign: 'center',
-    marginBottom: 40,
-  },
-  logoutButton: {
-    backgroundColor: '#FF3B30',
-    borderRadius: 12,
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    shadowColor: '#FF3B30',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
-  },
-  logoutButtonText: {
-    color: '#ffffff',
-    fontSize: 18,
-    fontWeight: '600',
+  logo: {
+    width: 140,
+    height: 40,
   },
 });
 
