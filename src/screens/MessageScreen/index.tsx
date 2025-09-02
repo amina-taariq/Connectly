@@ -1,13 +1,15 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Image, KeyboardAvoidingView, Platform, TextInput, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Image, KeyboardAvoidingView, Platform, TextInput, ScrollView, Alert} from 'react-native';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import { Colors } from '../../constant/Colors';
 import fonts from '../../utils/fonts';
 import BottomSheet from '../../components/BottomSheet';
+import imagePicker from '../../services/imagePicker';
 
 interface Message {
   id: number;
-  text: string;
+  text?: string;
+  imageUri?: string;
   isFromMe: boolean;
   timestamp: Date;
   isRead: boolean;
@@ -101,11 +103,15 @@ const MessageScreen = () => {
     <View
       key={message.id}
       style={[
-        styles.messageBubble,
+        message.imageUri ? styles.messageImageBubble : styles.messageBubble,
         message.isFromMe ? styles.myMessage : styles.otherMessage,
       ]}
     >
-      <Text style={[styles.messageText]}>{message.text}</Text>
+      {message.imageUri ? (
+        <Image source={{ uri: message.imageUri }} style={styles.messageImage} resizeMode="cover" />
+      ) : (
+        <Text style={[styles.messageText]}>{message.text}</Text>
+      )}
       <View style={styles.msgInnerContainer}>
         <Text style={styles.timeText}>{formatTime(message.timestamp)}</Text>
         {message.isRead ? (
@@ -126,6 +132,46 @@ const MessageScreen = () => {
   );
 
   const [sheetVisible, setSheetVisible] = useState(false);
+
+  const handleAttachFromGallery = async () => {
+    try {
+      const picked = await imagePicker.pickImageFromGallery();
+      if (picked?.uri) {
+        const newMessage: Message = {
+          id: Date.now(),
+          imageUri: picked.uri,
+          isFromMe: true,
+          timestamp: new Date(),
+          isRead: false,
+        };
+        setMessages(prev => [...prev, newMessage]);
+      } else {
+        Alert.alert('No image selected', 'You cancelled or permission was denied.');
+      }
+    } catch (e: any) {
+      Alert.alert('Image picker error', e?.message ?? 'Unknown error');
+    }
+  };
+
+  const handleAttachFromCamera = async () => {
+    try {
+      const picked = await imagePicker.captureImageFromCamera();
+      if (picked?.uri) {
+        const newMessage: Message = {
+          id: Date.now(),
+          imageUri: picked.uri,
+          isFromMe: true,
+          timestamp: new Date(),
+          isRead: false,
+        };
+        setMessages(prev => [...prev, newMessage]);
+      } else {
+        Alert.alert('No image captured', 'You cancelled or permission was denied.');
+      }
+    } catch (e: any) {
+      Alert.alert('Camera error', e?.message ?? 'Unknown error');
+    }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -209,13 +255,13 @@ const MessageScreen = () => {
             key: 'gallery',
             label: 'Gallery',
             icon: require('../../assets/images/gallery.png'),
-            onPress: () => {},
+            onPress: handleAttachFromGallery,
           },
           {
             key: 'camera',
             label: 'Camera',
             icon: require('../../assets/images/camera.png'),
-            onPress: () => {},
+            onPress: handleAttachFromCamera,
           },
         ]}
       />
@@ -285,6 +331,19 @@ const styles = StyleSheet.create({
     maxWidth: '80%',
     paddingHorizontal: 16,
     paddingVertical: 10,
+    borderRadius: 16,
+    marginVertical: 8,
+    marginHorizontal: 16,
+    flexDirection: 'column',
+    gap: 4,
+    backgroundColor: '#F3F6F7',
+    borderWidth: 1,
+    borderColor: Colors.borderColor,
+  },
+  messageImageBubble: {
+    maxWidth: '80%',
+    paddingHorizontal: 6,
+    paddingVertical: 6,
     borderRadius: 16,
     marginVertical: 8,
     marginHorizontal: 16,
@@ -368,6 +427,12 @@ const styles = StyleSheet.create({
   sendIcon: {
     height: 46,
     width: 45,
+  },
+  messageImage: {
+    width: 220,
+    height: 220,
+    borderRadius: 12,
+    backgroundColor: '#EAEAEA',
   },
   
 });

@@ -3,6 +3,7 @@ import { View, Image, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Colors } from '../../../constant/Colors';
 import fonts from '../../../utils/fonts';
 import BottomSheet from '../../../components/BottomSheet';
+import imagePicker from '../../../services/imagePicker';
 
 const AVATAR_SIZE = 110;
 const CAMERA_SIZE = 36;
@@ -10,6 +11,20 @@ const CAMERA_SIZE = 36;
 const RegistrationAvatar: React.FC = () => {
   const [sheetVisible, setSheetVisible] = useState(false);
   const [imageUri, setImageUri] = useState<string | undefined>(undefined);
+
+  const handlePickFromGallery = async () => {
+    const picked = await imagePicker.pickImageFromGallery();
+    if (picked?.uri) {
+      setImageUri(picked.uri);
+    }
+  };
+
+  const handlePickFromCamera = async () => {
+    const picked = await imagePicker.captureImageFromCamera();
+    if (picked?.uri) {
+      setImageUri(picked.uri);
+    }
+  };
 
   return (
     <View style={styles.wrapper}>
@@ -41,13 +56,13 @@ const RegistrationAvatar: React.FC = () => {
             key: 'gallery',
             label: 'Gallery',
             icon: require('../../../assets/images/gallery.png'),
-            onPress: () => {},
+            onPress: handlePickFromGallery,
           },
           {
             key: 'camera',
             label: 'Camera',
             icon: require('../../../assets/images/camera.png'),
-            onPress: () => {},
+            onPress: handlePickFromCamera,
           },
         ]}
       />
