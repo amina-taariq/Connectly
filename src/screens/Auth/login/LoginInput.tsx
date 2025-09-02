@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, TextInput, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import {View, TextInput, StyleSheet, TouchableOpacity, Text, Image} from 'react-native';
 import fonts from '../../../utils/fonts';
 import { Colors } from '../../../constant/Colors';
 import { useNavigation } from '@react-navigation/native';
@@ -38,7 +38,15 @@ const LoginInput: React.FC = () => {
           returnKeyType="done"
         />
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <Text style={styles.eyeText}>{showPassword ? 'Hide' : 'Show'}</Text>
+          <Image
+            source={
+              showPassword
+                ? require('../../../assets/images/show.png')
+                : require('../../../assets/images/hidden.png')
+            }
+            resizeMode="contain"
+            style={styles.eyeStyle}
+          />
         </TouchableOpacity>
       </View>
 
@@ -74,10 +82,9 @@ const styles = StyleSheet.create({
   inputFlex: {
     flex: 1,
   },
-  eyeText: {
-    fontFamily: fonts.SansBold,
-    color: Colors.black,
-    fontSize: 14,
+  eyeStyle: {
+    height: 20,
+    width: 20,
     paddingLeft: 8,
   },
   loginButton: {

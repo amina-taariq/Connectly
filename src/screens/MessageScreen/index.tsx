@@ -3,6 +3,7 @@ import {View, Text, StyleSheet, TouchableOpacity, Image, KeyboardAvoidingView, P
 import {useRoute, useNavigation} from '@react-navigation/native';
 import { Colors } from '../../constant/Colors';
 import fonts from '../../utils/fonts';
+import BottomSheet from '../../components/BottomSheet';
 
 interface Message {
   id: number;
@@ -124,6 +125,8 @@ const MessageScreen = () => {
     </View>
   );
 
+  const [sheetVisible, setSheetVisible] = useState(false);
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -170,7 +173,10 @@ const MessageScreen = () => {
         </ScrollView>
 
         <View style={styles.inputContainer}>
-          <TouchableOpacity style={styles.imageUpload}>
+          <TouchableOpacity
+            style={styles.imageUpload}
+            onPress={() => setSheetVisible(true)}
+          >
             <Image
               style={styles.uploadIcon}
               source={require('../../assets/images/imageUpload.png')}
@@ -195,6 +201,24 @@ const MessageScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
+      <BottomSheet
+        visible={sheetVisible}
+        onClose={() => setSheetVisible(false)}
+        options={[
+          {
+            key: 'gallery',
+            label: 'Gallery',
+            icon: require('../../assets/images/gallery.png'),
+            onPress: () => {},
+          },
+          {
+            key: 'camera',
+            label: 'Camera',
+            icon: require('../../assets/images/camera.png'),
+            onPress: () => {},
+          },
+        ]}
+      />
     </KeyboardAvoidingView>
   );
 };
@@ -345,6 +369,7 @@ const styles = StyleSheet.create({
     height: 46,
     width: 45,
   },
+  
 });
 
 export default MessageScreen;

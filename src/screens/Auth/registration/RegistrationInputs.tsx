@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, TextInput, TouchableOpacity, Text, StyleSheet} from 'react-native';
+import {View, TextInput, TouchableOpacity, Text, StyleSheet, Image} from 'react-native';
 import { Colors } from '../../../constant/Colors';
 import fonts from '../../../utils/fonts';
 
@@ -62,7 +62,15 @@ const RegistrationInputs: React.FC<RegistrationInputsProps> = ({ onSubmit }) => 
             returnKeyType="next"
           />
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <Text style={styles.eyeText}>{showPassword ? 'Hide' : 'Show'}</Text>
+            <Image
+              source={
+                showPassword
+                  ? require('../../../assets/images/show.png')
+                  : require('../../../assets/images/hidden.png')
+              }
+              resizeMode="contain"
+              style={styles.eyeStyle}
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -80,15 +88,27 @@ const RegistrationInputs: React.FC<RegistrationInputsProps> = ({ onSubmit }) => 
             onChangeText={setConfirmPassword}
             returnKeyType="done"
           />
-          <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-            <Text style={styles.eyeText}>{showConfirmPassword ? 'Hide' : 'Show'}</Text>
+          <TouchableOpacity
+            onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+          >
+            <Image
+              source={
+                showConfirmPassword
+                  ? require('../../../assets/images/show.png')
+                  : require('../../../assets/images/hidden.png')
+              }
+              resizeMode="contain"
+              style={styles.eyeStyle}
+            />
           </TouchableOpacity>
         </View>
       </View>
 
       <TouchableOpacity
         style={styles.primaryButton}
-        onPress={() => onSubmit?.({ fullName, email, password, confirmPassword })}
+        onPress={() =>
+          onSubmit?.({ fullName, email, password, confirmPassword })
+        }
       >
         <Text style={styles.primaryText}>Create Account</Text>
       </TouchableOpacity>
@@ -122,10 +142,9 @@ const styles = StyleSheet.create({
   inputFlex: {
     flex: 1,
   },
-  eyeText: {
-    fontFamily: fonts.SansBold,
-    color: Colors.black,
-    fontSize: 14,
+  eyeStyle: {
+    height: 20,
+    width:20,
     paddingLeft: 8,
   },
   primaryButton: {
