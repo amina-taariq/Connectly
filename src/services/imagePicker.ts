@@ -1,6 +1,5 @@
 import {Platform} from 'react-native';
 import {
-  Asset,
   CameraOptions,
   ImageLibraryOptions,
   launchCamera,
@@ -9,42 +8,46 @@ import {
 
 export type PickedImage = {
   uri: string;
-  fileName?: string | null;
-  type?: string | null;
-  width?: number | null;
-  height?: number | null;
-  fileSize?: number | null;
-  asset?: Asset;
+  fileName?: string;
+  type?: string;
+  width?: number;
+  height?: number;
+  fileSize?: number;
 };
 
 const defaultLibraryOptions: ImageLibraryOptions = {
   mediaType: 'photo',
   selectionLimit: 1,
-  quality: 0.8,
+  quality: 0.9,
   includeBase64: false,
+  includeExtra: false,
+  maxWidth: 1280,
+  maxHeight: 1280,
+  presentationStyle: Platform.OS === 'ios' ? 'overFullScreen' : undefined,
 };
 
 const defaultCameraOptions: CameraOptions = {
   mediaType: 'photo',
   cameraType: 'back',
-  quality: 0.8,
-  saveToPhotos: Platform.OS === 'android',
+  quality: 0.9,
+  saveToPhotos: false,
   includeBase64: false,
+  maxWidth: 1280,
+  maxHeight: 1280,
+  presentationStyle: Platform.OS === 'ios' ? 'overFullScreen' : undefined,
 };
 
-function normalizeAsset(asset?: Asset): PickedImage | null {
+function normalizeAsset(asset?: { uri?: string; fileName?: string; type?: string; width?: number; height?: number; fileSize?: number; }): PickedImage | null {
   if (!asset?.uri) {
     return null;
   }
-  return {
-    uri: asset.uri,
-    fileName: asset.fileName ?? null,
-    type: asset.type ?? null,
-    width: asset.width ?? null,
-    height: asset.height ?? null,
-    fileSize: asset.fileSize ?? null,
-    asset,
-  };
+  const normalized: PickedImage = { uri: asset.uri };
+  if (asset.fileName) normalized.fileName = asset.fileName;
+  if (asset.type) normalized.type = asset.type;
+  if (asset.width) normalized.width = asset.width;
+  if (asset.height) normalized.height = asset.height;
+  if (asset.fileSize) normalized.fileSize = asset.fileSize;
+  return normalized;
 }
 
 export async function pickImageFromGallery(
