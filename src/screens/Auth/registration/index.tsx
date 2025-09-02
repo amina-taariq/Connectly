@@ -11,6 +11,7 @@ import { Colors } from '../../../constant/Colors';
 import fonts from '../../../utils/fonts';
 import RegistrationInputs from './RegistrationInputs';
 import RegistrationFooter from './RegistrationFooter';
+import RegistrationAvatar from './RegistrationAvatar';
 
 interface RegistrationScreenProps {
   navigation: any;
@@ -37,7 +38,7 @@ const RegistrationScreen: React.FC<RegistrationScreenProps> = () => {
                 Join Connectly and start connecting
               </Text>
             </View>
-
+            <RegistrationAvatar/>
             <RegistrationInputs/>
             <RegistrationFooter/>
           </View>
