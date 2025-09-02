@@ -209,6 +209,11 @@ const MessageScreen = () => {
       </View>
 
       <View style={styles.chatContainer}>
+        {messages.length === 0 && (
+          <View pointerEvents="none" style={styles.emptyStateContainer}>
+            <Text style={styles.emptyStateText}>start connecting</Text>
+          </View>
+        )}
         <ScrollView
           ref={scrollViewRef}
           style={styles.messagesContainer}
@@ -433,6 +438,21 @@ const styles = StyleSheet.create({
     height: 220,
     borderRadius: 12,
     backgroundColor: '#EAEAEA',
+  },
+  emptyStateContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyStateText: {
+    fontFamily: fonts.SansRegular,
+    fontSize: 20,
+    color: Colors.lightGrey,
+    textTransform: 'capitalize',
   },
   
 });
