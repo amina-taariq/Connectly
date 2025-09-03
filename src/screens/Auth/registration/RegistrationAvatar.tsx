@@ -8,21 +8,34 @@ import imagePicker from '../../../services/imagePicker';
 const AVATAR_SIZE = 110;
 const CAMERA_SIZE = 36;
 
-const RegistrationAvatar: React.FC = () => {
+interface RegistrationAvatarProps {
+  onImageChange?: (uri: string | undefined) => void;
+}
+
+const RegistrationAvatar: React.FC<RegistrationAvatarProps> = ({
+  onImageChange,
+}) => {
   const [sheetVisible, setSheetVisible] = useState(false);
   const [imageUri, setImageUri] = useState<string | undefined>(undefined);
 
+  const handleImageSelected = (uri: string | undefined) => {
+    setImageUri(uri);
+    onImageChange?.(uri);
+  };
+
   const handlePickFromGallery = async () => {
+    setSheetVisible(false);
     const picked = await imagePicker.pickImageFromGallery();
     if (picked?.uri) {
-      setImageUri(picked.uri);
+      handleImageSelected(picked.uri);
     }
   };
 
   const handlePickFromCamera = async () => {
+    setSheetVisible(false);
     const picked = await imagePicker.captureImageFromCamera();
     if (picked?.uri) {
-      setImageUri(picked.uri);
+      handleImageSelected(picked.uri);
     }
   };
 

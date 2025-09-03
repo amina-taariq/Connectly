@@ -1,67 +1,255 @@
-import React, {useState} from 'react';
-import {View, TextInput, TouchableOpacity, Text, StyleSheet, Image} from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  Image,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import { Colors } from '../../../constant/Colors';
 import fonts from '../../../utils/fonts';
+import authService, {
+  UserRegistrationData,
+} from '../../../services/authService';
+import { useNavigation } from '@react-navigation/native';
 
 interface RegistrationInputsProps {
-  onSubmit?: (data: { fullName: string; email: string; password: string; confirmPassword: string }) => void;
+  photoUri?: string;
+  onSuccess?: (user: any, profile: any) => void;
+  onError?: (error: string) => void;
+  onNavigateToHome?: () => void; // New prop for navigation
 }
 
-const RegistrationInputs: React.FC<RegistrationInputsProps> = ({ onSubmit }) => {
+const RegistrationInputs: React.FC<RegistrationInputsProps> = ({
+  photoUri,
+  onSuccess,
+  onError,
+}) => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({
+    fullName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+   const navigation = useNavigation<any>();
+  
+
+  // Function to clear all form fields
+  const clearAllFields = () => {
+    setFullName('');
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setShowPassword(false);
+    setShowConfirmPassword(false);
+    setErrors({
+      fullName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    });
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors = {
+      fullName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    };
+
+    // Full name validation
+    if (!fullName.trim()) {
+      newErrors.fullName = 'Full name is required';
+    } else if (fullName.trim().length < 2) {
+      newErrors.fullName = 'Full name must be at least 2 characters';
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!emailRegex.test(email.trim())) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+
+    // Password validation
+    if (!password) {
+      newErrors.password = 'Password is required';
+    } else if (password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+      newErrors.password =
+        'Password must contain uppercase, lowercase, and number';
+    }
+
+    // Confirm password validation
+    if (!confirmPassword) {
+      newErrors.confirmPassword = 'Please confirm your password';
+    } else if (password !== confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match';
+    }
+
+    setErrors(newErrors);
+    return !Object.values(newErrors).some(error => error !== '');
+  };
+
+  const handleSubmit = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const registrationData: UserRegistrationData = {
+        fullName: fullName.trim(),
+        email: email.trim().toLowerCase(),
+        password,
+        confirmPassword,
+        photoUri,
+      };
+
+      const { user, profile } = await authService.registerWithEmail(
+        registrationData,
+      );
+
+      // Show success alert with navigation
+      Alert.alert(
+        'Success',
+        'Account created successfully! Welcome to the app!',
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              // Call onSuccess callback first
+              onSuccess?.(user, profile);
+
+              // Clear all form fields
+              clearAllFields();
+
+              // Navigate to home screen directly
+              if (navigation) {
+              navigation.navigate('HomeScreen');
+              } else {
+                console.warn(
+                  'Navigation prop not provided to RegistrationInputs',
+                );
+              }
+            },
+          },
+        ],
+        { cancelable: false }, // Prevent dismissing by tapping outside
+      );
+    } catch (error: any) {
+      console.error('Registration failed:', error);
+      const errorMessage =
+        error.message || 'Registration failed. Please try again.';
+
+      Alert.alert('Registration Failed', errorMessage);
+      onError?.(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getInputStyle = (fieldName: keyof typeof errors) => [
+    styles.input,
+    errors[fieldName] ? styles.inputError : null,
+  ];
+
+  const getInputWrapperStyle = (fieldName: keyof typeof errors) => [
+    styles.inputWrapper,
+    errors[fieldName] ? styles.inputWrapperError : null,
+  ];
 
   return (
     <View>
+      {/* Full Name Input */}
       <View style={styles.inputContainer}>
-        <View style={styles.inputWrapper}>
+        <View style={getInputWrapperStyle('fullName')}>
           <TextInput
-            style={styles.input}
+            style={getInputStyle('fullName')}
             placeholder="Full Name"
             placeholderTextColor={Colors.grey2}
             value={fullName}
-            onChangeText={setFullName}
+            onChangeText={text => {
+              setFullName(text);
+              if (errors.fullName) {
+                setErrors(prev => ({ ...prev, fullName: '' }));
+              }
+            }}
             autoCapitalize="words"
             autoCorrect={false}
             returnKeyType="next"
+            editable={!isLoading}
           />
         </View>
+        {errors.fullName ? (
+          <Text style={styles.errorText}>{errors.fullName}</Text>
+        ) : null}
       </View>
 
+      {/* Email Input */}
       <View style={styles.inputContainer}>
-        <View style={styles.inputWrapper}>
+        <View style={getInputWrapperStyle('email')}>
           <TextInput
-            style={styles.input}
+            style={getInputStyle('email')}
             placeholder="Email"
             placeholderTextColor={Colors.grey2}
             value={email}
-            onChangeText={setEmail}
+            onChangeText={text => {
+              setEmail(text);
+              if (errors.email) {
+                setErrors(prev => ({ ...prev, email: '' }));
+              }
+            }}
             keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
             returnKeyType="next"
+            editable={!isLoading}
           />
         </View>
+        {errors.email ? (
+          <Text style={styles.errorText}>{errors.email}</Text>
+        ) : null}
       </View>
 
+      {/* Password Input */}
       <View style={styles.inputContainer}>
-        <View style={[styles.inputWrapper, styles.inputRow]}>
+        <View style={[getInputWrapperStyle('password'), styles.inputRow]}>
           <TextInput
-            style={[styles.input, styles.inputFlex]}
+            style={[getInputStyle('password'), styles.inputFlex]}
             placeholder="Password"
             placeholderTextColor={Colors.grey2}
             secureTextEntry={!showPassword}
             autoCapitalize="none"
             autoCorrect={false}
             value={password}
-            onChangeText={setPassword}
+            onChangeText={text => {
+              setPassword(text);
+              if (errors.password) {
+                setErrors(prev => ({ ...prev, password: '' }));
+              }
+            }}
             returnKeyType="next"
+            editable={!isLoading}
           />
-          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+          <TouchableOpacity
+            onPress={() => setShowPassword(!showPassword)}
+            disabled={isLoading}
+          >
             <Image
               source={
                 showPassword
@@ -73,23 +261,37 @@ const RegistrationInputs: React.FC<RegistrationInputsProps> = ({ onSubmit }) => 
             />
           </TouchableOpacity>
         </View>
+        {errors.password ? (
+          <Text style={styles.errorText}>{errors.password}</Text>
+        ) : null}
       </View>
 
+      {/* Confirm Password Input */}
       <View style={styles.inputContainer}>
-        <View style={[styles.inputWrapper, styles.inputRow]}>
+        <View
+          style={[getInputWrapperStyle('confirmPassword'), styles.inputRow]}
+        >
           <TextInput
-            style={[styles.input, styles.inputFlex]}
+            style={[getInputStyle('confirmPassword'), styles.inputFlex]}
             placeholder="Confirm Password"
             placeholderTextColor={Colors.grey2}
             secureTextEntry={!showConfirmPassword}
             autoCapitalize="none"
             autoCorrect={false}
             value={confirmPassword}
-            onChangeText={setConfirmPassword}
+            onChangeText={text => {
+              setConfirmPassword(text);
+              if (errors.confirmPassword) {
+                setErrors(prev => ({ ...prev, confirmPassword: '' }));
+              }
+            }}
             returnKeyType="done"
+            editable={!isLoading}
+            onSubmitEditing={handleSubmit}
           />
           <TouchableOpacity
             onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+            disabled={isLoading}
           >
             <Image
               source={
@@ -102,15 +304,25 @@ const RegistrationInputs: React.FC<RegistrationInputsProps> = ({ onSubmit }) => 
             />
           </TouchableOpacity>
         </View>
+        {errors.confirmPassword ? (
+          <Text style={styles.errorText}>{errors.confirmPassword}</Text>
+        ) : null}
       </View>
 
+      {/* Submit Button */}
       <TouchableOpacity
-        style={styles.primaryButton}
-        onPress={() =>
-          onSubmit?.({ fullName, email, password, confirmPassword })
-        }
+        style={[
+          styles.primaryButton,
+          isLoading && styles.primaryButtonDisabled,
+        ]}
+        onPress={handleSubmit}
+        disabled={isLoading}
       >
-        <Text style={styles.primaryText}>Create Account</Text>
+        {isLoading ? (
+          <ActivityIndicator color={Colors.black} size="small" />
+        ) : (
+          <Text style={styles.primaryText}>Create Account</Text>
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -130,6 +342,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 0,
   },
+  inputWrapperError: {
+    borderColor: '#FF6B6B',
+    borderWidth: 1.5,
+  },
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -139,12 +355,15 @@ const styles = StyleSheet.create({
     color: Colors.black,
     fontSize: 16,
   },
+  inputError: {
+    color: '#FF6B6B',
+  },
   inputFlex: {
     flex: 1,
   },
   eyeStyle: {
     height: 20,
-    width:20,
+    width: 20,
     paddingLeft: 8,
   },
   primaryButton: {
@@ -155,13 +374,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 6,
   },
+  primaryButtonDisabled: {
+    backgroundColor: Colors.grey2,
+    opacity: 0.6,
+  },
   primaryText: {
     fontFamily: fonts.SansBold,
     color: Colors.black,
     fontSize: 16,
   },
+  errorText: {
+    color: '#FF6B6B',
+    fontSize: 12,
+    fontFamily: fonts.SansMedium,
+    marginTop: 4,
+    marginLeft: 4,
+  },
 });
 
 export default RegistrationInputs;
-
-

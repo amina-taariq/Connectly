@@ -18,4 +18,5 @@ export const Colors = {
   yellow: '#FEDE3A',
   cadetGray: '#9AA3AC',
   pink: '#FA0559',
+  blue: '#007AFF',
 };

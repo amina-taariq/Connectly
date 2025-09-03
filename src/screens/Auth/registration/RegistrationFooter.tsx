@@ -1,11 +1,22 @@
-import React from 'react';
-import {View, Image, TouchableOpacity, Text, StyleSheet} from 'react-native';
+
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+} from 'react-native';
 import { Colors } from '../../../constant/Colors';
 import fonts from '../../../utils/fonts';
 import { useNavigation } from '@react-navigation/native';
 
-const RegistrationFooter: React.FC = () => {
+interface RegistrationFooterProps {
+  onError?: (error: string) => void;
+}
+
+const RegistrationFooter: React.FC<RegistrationFooterProps> = () => {
   const navigation = useNavigation<any>();
+
   return (
     <View>
       <Image
@@ -13,16 +24,14 @@ const RegistrationFooter: React.FC = () => {
         style={styles.orImage}
         resizeMode="contain"
       />
-      <TouchableOpacity style={styles.googleButton}>
-        <Image
-          source={require('../../../assets/images/google.png')}
-          resizeMode="contain"
-          style={styles.googleImage}
-        />
-        <Text style={styles.registerText}>Sign Up With Google</Text>
-      </TouchableOpacity>
+
+
       <Text style={styles.dontAccount}>Have an Account?</Text>
-      <TouchableOpacity style={styles.registerButton} onPress={() => navigation.navigate('Login')}>
+
+      <TouchableOpacity
+        style={styles.registerButton}
+        onPress={() => navigation.navigate('Login')}
+      >
         <Text style={styles.registerText}>Login With Email</Text>
       </TouchableOpacity>
     </View>
@@ -42,17 +51,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
   },
-  googleButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.backgroundWhite,
-    padding: 12,
-    borderRadius: 16,
-    marginTop: 10,
-    height: 57,
-    gap: 6,
-  },
   registerButton: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -61,18 +59,17 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     marginTop: 10,
     height: 57,
+    borderWidth: 1,
+    borderColor: Colors.borderColor,
+  },
+  buttonDisabled: {
+    opacity: 0.6,
   },
   registerText: {
     fontSize: 16,
     fontFamily: fonts.SansBold,
     color: Colors.black,
   },
-  googleImage: {
-    height: 22,
-    width: 22,
-  },
 });
 
 export default RegistrationFooter;
-
-

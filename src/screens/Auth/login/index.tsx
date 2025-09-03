@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   View,
   StyleSheet,
@@ -5,7 +6,6 @@ import {
   Platform,
   ScrollView,
   Text,
-
 } from 'react-native';
 import { Colors } from '../../../constant/Colors';
 import fonts from '../../../utils/fonts';

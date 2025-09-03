@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,13 +12,43 @@ import fonts from '../../../utils/fonts';
 import RegistrationInputs from './RegistrationInputs';
 import RegistrationFooter from './RegistrationFooter';
 import RegistrationAvatar from './RegistrationAvatar';
+import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 
 interface RegistrationScreenProps {
   navigation: any;
 }
 
-const RegistrationScreen: React.FC<RegistrationScreenProps> = () => {
+const RegistrationScreen: React.FC<RegistrationScreenProps> = ({
+  navigation,
+}) => {
+  const [avatarUri, setAvatarUri] = useState<string | undefined>(undefined);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
 
+  useEffect(() => {
+    const unsubscribe = auth().onAuthStateChanged(
+      (user: FirebaseAuthTypes.User | null) => {
+        if (user && !isAuthenticating) {
+          console.log('User registered successfully:', user.email);
+        }
+      },
+    );
+
+    return () => unsubscribe();
+  }, [navigation, isAuthenticating]);
+
+  const handleRegistrationSuccess = (user: any, profile: any) => {
+    setIsAuthenticating(true);
+    console.log('Registration successful:', { user: user.email, profile });
+  };
+
+  const handleRegistrationError = (error: string) => {
+    console.error('Registration error:', error);
+    setIsAuthenticating(false);
+  };
+
+  const handleAvatarChange = (uri: string | undefined) => {
+    setAvatarUri(uri);
+  };
 
   return (
     <View style={styles.container}>
@@ -29,6 +59,7 @@ const RegistrationScreen: React.FC<RegistrationScreenProps> = () => {
         <ScrollView
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
         >
           <View style={styles.header} />
           <View style={styles.content}>
@@ -38,9 +69,16 @@ const RegistrationScreen: React.FC<RegistrationScreenProps> = () => {
                 Join Connectly and start connecting
               </Text>
             </View>
-            <RegistrationAvatar/>
-            <RegistrationInputs/>
-            <RegistrationFooter/>
+
+            <RegistrationAvatar onImageChange={handleAvatarChange} />
+
+            <RegistrationInputs
+              photoUri={avatarUri}
+              onSuccess={handleRegistrationSuccess}
+              onError={handleRegistrationError}
+            />
+
+            <RegistrationFooter onError={handleRegistrationError} />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -52,6 +90,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.main,
+  },
+  scrollContent: {
+    flexGrow: 1,
   },
   content: {
     flex: 1,
