@@ -4,6 +4,7 @@ import fonts from '../../../utils/fonts';
 import { Colors } from '../../../constant/Colors';
 import { useNavigation } from '@react-navigation/native';
 import authService from '../../../services/authService';
+import { validateLoginForm } from '../../../utils/validation';
 
 const LoginInput: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -17,28 +18,12 @@ const LoginInput: React.FC = () => {
   const navigation = useNavigation<any>();
   
   const validateForm = (): boolean => {
-    const newErrors = {
-      email: '',
-      password: ''
-    };
-
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!emailRegex.test(email.trim())) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-
-    // Password validation
-    if (!password) {
-      newErrors.password = 'Password is required';
-    } else if (password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-
-    setErrors(newErrors);
-    return !Object.values(newErrors).some(error => error !== '');
+    const validationResult = validateLoginForm(email, password);
+    setErrors({
+      email: validationResult.email,
+      password: validationResult.password
+    });
+    return validationResult.isValid;
   };
 
   const handleLogin = async () => {
@@ -50,7 +35,11 @@ const LoginInput: React.FC = () => {
     try {
       const { user, profile } = await authService.signInWithEmail(email.trim(), password);
       console.log('Login successful', { user: user.uid, profile });
-      navigation.navigate('Home');
+      // Reset navigation stack and set Home as the only screen
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
     } catch (error: any) {
       Alert.alert('Login Failed', error.message || 'Failed to login. Please try again.');
     } finally {

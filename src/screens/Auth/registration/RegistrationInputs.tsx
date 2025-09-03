@@ -15,6 +15,7 @@ import authService, {
   UserRegistrationData,
 } from '../../../services/authService';
 import { useNavigation } from '@react-navigation/native';
+import { validateRegistrationForm } from '../../../utils/validation';
 
 interface RegistrationInputsProps {
   photoUri?: string;
@@ -61,47 +62,21 @@ const RegistrationInputs: React.FC<RegistrationInputsProps> = ({
   };
 
   const validateForm = (): boolean => {
-    const newErrors = {
-      fullName: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-    };
-
-    // Full name validation
-    if (!fullName.trim()) {
-      newErrors.fullName = 'Full name is required';
-    } else if (fullName.trim().length < 2) {
-      newErrors.fullName = 'Full name must be at least 2 characters';
-    }
-
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!emailRegex.test(email.trim())) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-
-    // Password validation
-    if (!password) {
-      newErrors.password = 'Password is required';
-    } else if (password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
-      newErrors.password =
-        'Password must contain uppercase, lowercase, and number';
-    }
-
-    // Confirm password validation
-    if (!confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
-    } else if (password !== confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-
-    setErrors(newErrors);
-    return !Object.values(newErrors).some(error => error !== '');
+    const validationResult = validateRegistrationForm(
+      fullName,
+      email,
+      password,
+      confirmPassword
+    );
+    
+    setErrors({
+      fullName: validationResult.fullName,
+      email: validationResult.email,
+      password: validationResult.password,
+      confirmPassword: validationResult.confirmPassword
+    });
+    
+    return validationResult.isValid;
   };
 
   const handleSubmit = async () => {
@@ -138,9 +113,12 @@ const RegistrationInputs: React.FC<RegistrationInputsProps> = ({
               // Clear all form fields
               clearAllFields();
 
-              // Navigate to home screen directly
+              // Reset navigation stack and set Home as the only screen
               if (navigation) {
-              navigation.navigate('HomeScreen');
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: 'Home' }],
+                });
               } else {
                 console.warn(
                   'Navigation prop not provided to RegistrationInputs',

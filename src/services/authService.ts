@@ -59,16 +59,25 @@ class AuthService {
 
   // Validate registration data
   private validateRegistrationData(data: UserRegistrationData): string | null {
-    if (!data.fullName.trim()) return 'Full name is required';
-    if (!data.email.trim()) return 'Email is required';
-    if (!data.password) return 'Password is required';
-    if (data.password.length < 6)
-      return 'Password must be at least 6 characters';
-    if (data.password !== data.confirmPassword) return 'Passwords do not match';
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(data.email)) return 'Please enter a valid email';
-
+    // Import validation functions from our validation utility
+    const { validateRegistrationForm } = require('../utils/validation');
+    
+    const validationResult = validateRegistrationForm(
+      data.fullName,
+      data.email,
+      data.password,
+      data.confirmPassword
+    );
+    
+    // Return the first error found or null if valid
+    if (!validationResult.isValid) {
+      return validationResult.fullName || 
+             validationResult.email || 
+             validationResult.password || 
+             validationResult.confirmPassword || 
+             'Validation failed';
+    }
+    
     return null;
   }
 
